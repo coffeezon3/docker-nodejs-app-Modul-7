@@ -1,72 +1,48 @@
-## demo app - developing with Docker
+# Dockerize Node.js Application
 
-This demo app shows a simple user profile app set up using 
-- index.html with pure js and css styles
-- nodejs backend with express module
-- mongodb for data storage
+## Projektübersicht
 
-All components are docker-based
+Dieses Projekt demonstriert das Dockerizing einer Node.js-Anwendung.
 
-### With Docker
+## Technologien
 
-#### To start the application
+* Docker
+* Node.js
 
-Step 1: Create docker network
+## Projektbeschreibung
 
-    docker network create mongo-network 
+* Schreiben eines `Dockerfile`, um ein Docker-Image der Node.js-Anwendung zu bauen.
+* Ausführen der Node.js-Anwendung innerhalb eines Docker-Containers.
+* Das Repository enthält nur die notwendigen Dateien zum Docker-Build der App.
 
-Step 2: start mongodb 
+## Struktur
 
-    docker run -d -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=password --name mongodb --net mongo-network mongo    
+```
+Dockerfile
+README.md
+app/               # Quellcode der Node.js App
+package.json
+package-lock.json
+```
 
-Step 3: start mongo-express
-    
-    docker run -d -p 8081:8081 -e ME_CONFIG_MONGODB_ADMINUSERNAME=admin -e ME_CONFIG_MONGODB_ADMINPASSWORD=password --net mongo-network --name mongo-express -e ME_CONFIG_MONGODB_SERVER=mongodb -e ME_CONFIG_MONGODB_URL=mongodb://mongodb:27017 mongo-express   
+## Aufbau & Ausführung
 
-_NOTE: creating docker-network in optional. You can start both containers in a default network. In this case, just emit `--net` flag in `docker run` command_
+1. Docker-Image bauen:
 
-Step 4: open mongo-express from browser
+```bash
+docker build -t nodejs-app .
+```
 
-    http://localhost:8081
+2. Container starten:
 
-Step 5: create `user-account` _db_ and `users` _collection_ in mongo-express
+```bash
+docker run -d -p 3000:3000 nodejs-app
+```
 
-Step 6: Start your nodejs application locally - go to `app` directory of project 
+3. Anwendung ist erreichbar unter `http://localhost:3000`
 
-    cd app
-    npm install 
-    node server.js
-    
-Step 7: Access you nodejs application UI from browser
+## Hinweise
 
-    http://localhost:3000
+* Es wird nur das Node.js-Projekt dockerized, keine Datenbankverbindungen.
+* Alles Wesentliche für die Prüfungsdemonstration befindet sich im Repo.
 
-### With Docker Compose
-
-#### To start the application
-
-Step 1: start mongodb and mongo-express
-
-    docker-compose -f docker-compose.yaml up
-    
-_You can access the mongo-express under localhost:8080 from your browser_
-    
-Step 2: in mongo-express UI - create a new database "user-account"
-
-Step 3: in mongo-express UI - create a new collection "users" in the database "user-account"       
-    
-Step 4: start node server 
-
-    cd app
-    npm install
-    node server.js
-    
-Step 5: access the nodejs application from browser 
-
-    http://localhost:3000
-
-#### To build a docker image from the application
-
-    docker build -t my-app:1.0 .       
-    
-The dot "." at the end of the command denotes location of the Dockerfile.
